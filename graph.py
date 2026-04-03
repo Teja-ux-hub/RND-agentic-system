@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TypedDict
 
+from pydantic import BaseModel, Field
+
 from langgraph.graph import END, StateGraph
 
 
@@ -31,36 +33,77 @@ class MetricRow(TypedDict):
     MarketCap: float | str
 
 
+class ScoringMatrix(BaseModel):
+    price_competitiveness: int = Field(description="1-10 score (10 is best)")
+    feature_parity: int = Field(description="1-10 score (10 is best)")
+    market_momentum: int = Field(description="1-10 score (10 is best)")
+    brand_strength: int = Field(description="1-10 score (10 is best)")
+    overall_score: int = Field(description="1-10 score (10 is best)")
+
+
+class Strength(BaseModel):
+    description: str = Field(description="Detailed description of the strength")
+    impact: str = Field(description="Impact on win-rate, churn, or market position")
+    evidence_links: list[str] = Field(description="URLs to evidence backing this claim")
+
+
+class Weakness(BaseModel):
+    description: str = Field(description="Detailed description of the weakness")
+    impact: str = Field(description="Impact on win-rate, churn, or market position")
+    evidence_links: list[str] = Field(description="URLs to evidence backing this claim")
+
+
+class Recommendation(BaseModel):
+    timeframe: str = Field(description="Now, 6 months, or 12-24 months")
+    action_title: str = Field(description="The specific action to take")
+    why_now: str = Field(description="The risk or opportunity driving this action")
+    expected_metric: str = Field(description="The metric this action is expected to affect (e.g., churn, MRR, win-rate)")
+
+
+class Battlecard(BaseModel):
+    strengths: list[str] = Field(description="Top 3 strengths to use in sales calls")
+    weaknesses: list[str] = Field(description="Top 3 weaknesses to be aware of")
+    win_themes: dict[str, str] = Field(description="How to win against each main competitor")
+
+
 class AgentState(TypedDict):
     company_name: str
     ticker: str | None
     company_description: str
+    company_profile: dict[str, str]  # Segment, target customer, pricing tier, geo focus
     sector: str | None
     competitors: list[str]
     competitor_tickers: dict[str, str | None]
-    news_data: dict[str, list[NewsItem]]
+    strengths: list[Strength]
+    weaknesses: list[Weakness]
+    market_trends: list[str]
     product_moves: dict[str, list[ProductMove]]
-    market_position: dict[str, str]  # Ahead/Behind/Equal and why
-    public_issues: dict[str, list[str]]  # Complaints, scandals, outages
-    user_sentiment: dict[str, str]  # Latest feature feedback
+    actions: list[Recommendation]
+    battlecard: Battlecard
+    news_data: dict[str, list[NewsItem]]
     metrics: list[MetricRow]
+    scoring_matrices: dict[str, ScoringMatrix]
     strategy_summary: str
     pdf_path: str
     excel_path: str
+    reasoning_trace: list[str]
 
 
 def get_app():
     """Build and compile the LangGraph application."""
-    from agents import competitor_finder, metrics_agent, news_researcher, strategy_agent
+    from agents import competitor_finder, metrics_agent, news_researcher, synthesis_agent, strategy_agent
 
     graph = StateGraph(AgentState)
     graph.add_node("find_competitors", competitor_finder.run)
     graph.add_node("research_news", news_researcher.run)
     graph.add_node("get_metrics", metrics_agent.run)
+    graph.add_node("synthesize_insights", synthesis_agent.run)
     graph.add_node("write_strategy", strategy_agent.run)
+
     graph.set_entry_point("find_competitors")
     graph.add_edge("find_competitors", "research_news")
     graph.add_edge("research_news", "get_metrics")
-    graph.add_edge("get_metrics", "write_strategy")
+    graph.add_edge("get_metrics", "synthesize_insights")
+    graph.add_edge("synthesize_insights", "write_strategy")
     graph.add_edge("write_strategy", END)
     return graph.compile()

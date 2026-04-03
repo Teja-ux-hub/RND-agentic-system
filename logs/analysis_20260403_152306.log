@@ -1,0 +1,9 @@
+2026-04-03 15:23:46,736 - root - ERROR - Workflow execution failed: No module named 'matplotlib'
+Traceback (most recent call last):
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\main.py", line 154, in main
+    app = get_app()
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\graph.py", line 94, in get_app
+    from agents import competitor_finder, metrics_agent, news_researcher, synthesis_agent, strategy_agent
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\agents\strategy_agent.py", line 11, in <module>
+    import matplotlib.pyplot as plt
+ModuleNotFoundError: No module named 'matplotlib'

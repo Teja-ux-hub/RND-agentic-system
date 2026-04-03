@@ -1,0 +1,84 @@
+2026-03-30 18:57:57,960 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 18:58:06,891 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-30 18:58:36,807 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 18:58:57,555 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-30 18:59:19,858 - tools.html_fetch - WARNING - HTML fetch failed for https://blog.startupstash.com/hey-look-a-new-app-28dab8c46d95: 403 Client Error: Forbidden for url: https://blog.startupstash.com/hey-look-a-new-app-28dab8c46d95
+2026-03-30 18:59:26,183 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 19:00:25,532 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-03-30 19:00:25,536 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.03 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-03-30 19:01:26,224 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-03-30 19:01:26,230 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 2.21 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-03-30 19:02:27,017 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-03-30 19:02:27,024 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 4.59 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-03-30 19:02:33,702 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 503 Service Unavailable"
+2026-03-30 19:02:33,716 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 8.99 seconds as it raised ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}.
+2026-03-30 19:03:42,366 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-03-30 19:03:42,368 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 16.2 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-03-30 19:04:57,029 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-03-30 19:04:57,036 - agents.news_researcher - WARNING - NewsResearcher evidence gathering failed for Swiggy: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}
+2026-03-30 19:05:04,086 - tools.html_fetch - WARNING - HTML fetch failed for https://deliveryhero.jobs/blog/: 403 Client Error: Forbidden for url: https://deliveryhero.jobs/blog/
+2026-03-30 19:05:04,219 - tools.html_fetch - WARNING - HTML fetch failed for https://ftp.broadwayinfosys.com/blog/delivery-hero-unveiling-the-latest-news-and-developments-1764798123: HTTPSConnectionPool(host='ftp.broadwayinfosys.com', port=443): Max retries exceeded with url: /blog/delivery-hero-unveiling-the-latest-news-and-developments-1764798123 (Caused by NameResolutionError("HTTPSConnection(host='ftp.broadwayinfosys.com', port=443): Failed to resolve 'ftp.broadwayinfosys.com' ([Errno 11001] getaddrinfo failed)"))
+2026-03-30 19:05:08,844 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 19:06:08,044 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-03-30 19:06:08,052 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.44 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-03-30 19:06:18,361 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-30 19:06:37,939 - tools.html_fetch - WARNING - HTML fetch failed for https://www.uber.com/us/en/business/articles/product-updates-2023/: 406 Client Error: Not Acceptable for url: https://www.uber.com/us/en/business/articles/product-updates-2023/
+2026-03-30 19:06:40,160 - tools.html_fetch - WARNING - HTML fetch failed for https://merchants.ubereats.com/us/en/resources/articles/product-highlights/: 406 Client Error: Not Acceptable for url: https://merchants.ubereats.com/us/en/resources/articles/product-highlights/
+2026-03-30 19:06:43,250 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 19:07:21,181 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-30 19:07:34,674 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 19:07:49,517 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-30 19:07:52,555 - yfinance - ERROR - $ZOMATO.NS: possibly delisted; no price data found  (period=7d) (Yahoo error = "No data found, symbol may be delisted")
+2026-03-30 19:07:52,957 - yfinance - ERROR - $ZOMATO.NS: possibly delisted; no price data found  (period=1mo) (Yahoo error = "No data found, symbol may be delisted")
+2026-03-30 19:07:56,467 - yfinance - ERROR - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: TKWY.AS"}}}
+2026-03-30 19:07:57,582 - yfinance - ERROR - $TKWY.AS: possibly delisted; no price data found  (period=7d) (Yahoo error = "No data found, symbol may be delisted")
+2026-03-30 19:07:57,975 - yfinance - ERROR - $TKWY.AS: possibly delisted; no price data found  (period=1mo) (Yahoo error = "No data found, symbol may be delisted")
+2026-03-30 19:07:58,006 - agents.utils - INFO - SynthesisAgent: starting analysis for Zomato
+2026-03-30 19:08:00,046 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-30 19:08:13,324 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-30 19:08:13,357 - root - ERROR - Workflow execution failed: 'scoring_matrices'
+Traceback (most recent call last):
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\main.py", line 157, in main
+    final_state = app.invoke(initial_state)
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\venv\Lib\site-packages\langgraph\pregel\main.py", line 3292, in invoke
+    for chunk in self.stream(
+                 ~~~~~~~~~~~^
+        input,
+        ^^^^^^
+    ...<10 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    ):
+    ^
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\venv\Lib\site-packages\langgraph\pregel\main.py", line 2725, in stream
+    for _ in runner.tick(
+             ~~~~~~~~~~~^
+        [t for t in loop.tasks.values() if not t.writes],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        schedule_task=loop.accept_push,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 167, in tick
+    run_with_retry(
+    ~~~~~~~~~~~~~~^
+        t,
+        ^^
+    ...<10 lines>...
+        },
+        ^^
+    )
+    ^
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 96, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 656, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 400, in invoke
+    ret = self.func(*args, **kwargs)
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\agents\synthesis_agent.py", line 86, in run
+    updated_state["scoring_matrices"] = synthesis_result["scoring_matrices"]
+                                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'scoring_matrices'
+During task with name 'synthesize_insights' and id '422c471f-12fd-e9a1-15b1-baffe2c76c2b'

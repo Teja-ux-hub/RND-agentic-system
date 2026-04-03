@@ -28,6 +28,7 @@ def get_gemini_llm(
             model=model_name,
             google_api_key=api_key,
             temperature=temperature,
+            timeout=60,  # Set a 60-second timeout to prevent indefinite hangs
         )
     except Exception as exc:
         LOGGER.error("Failed to initialize Gemini LLM: %s", exc)

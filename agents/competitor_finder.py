@@ -126,12 +126,15 @@ def _call_gemini_for_competitors(
             ]
         )
         chain = prompt | llm | parser
-        response = chain.invoke({
+        invoke_payload = {
             "company_name": company_name,
             "sector": sector or "relevant",
             "context": json.dumps(raw_results, ensure_ascii=True),
             "manual_competitors": manual_competitors
-        })
+        }
+        LOGGER.debug("LLM Input (CompetitorFinder):\n%s", json.dumps(invoke_payload, indent=2))
+        response = chain.invoke(invoke_payload)
+        LOGGER.debug("LLM Output (CompetitorFinder):\n%s", json.dumps(response, indent=2))
         
         # Process and deduplicate competitors
         comp_data = response.get("competitors", [])
@@ -159,25 +162,34 @@ def _call_gemini_for_competitors(
 
 
 def run(state: AgentState) -> AgentState:
-    print(f"\n--- [AGENT] CompetitorFinder identifying rivals for: {state['company_name']} ---")
+    """Run competitor identification with premium data enrichment."""
+    print(f"\n{'='*70}")
+    print(f"🎯 [AGENT] CompetitorFinder - Identifying market rivals")
+    print(f"{'='*70}")
+    print(f"Target: {state['company_name']}")
     
     # Search the web in real-time
-    print(f"Searching for real-time market data on {state['company_name']}...")
+    print(f"\n📡 Searching global databases for real-time market intelligence on {state['company_name']}...")
     raw_search = search_competitors(state["company_name"], state.get("sector"))
     
     # Let Gemini analyze and extract everything
-    print("Asking Gemini to extract competitors and stock tickers from real-time search results...")
+    print("🤖 AI-powered entity extraction: Analyzing competitors and stock tickers from live data...")
     result = _call_gemini_for_competitors(
         state["company_name"], state.get("sector"), raw_search, state.get("competitors", [])
     )
 
-    print(f"Primary Ticker: {result.get('ticker') or 'N/A'}")
-    print(f"Rivals Identified: {', '.join(result['competitors'])}")
-    
-    # Log tickers for rivals
-    ticker_list = [f"{n}({t or 'Private'})" for n, t in result["competitor_tickers"].items()]
-    print(f"Rival Tickers: {', '.join(ticker_list)}")
-    print(f"Overview: {result['description']}")
+    print(f"\n✅ COMPETITOR ANALYSIS COMPLETE")
+    print(f"{'='*70}")
+    print(f"📌 Primary Company Ticker: {result.get('ticker') or 'Private/N/A'}")
+    print(f"🏢 Rivals Identified: {len(result['competitors'])} companies")
+    for idx, rival in enumerate(result['competitors'], 1):
+        ticker = result["competitor_tickers"].get(rival)
+        if ticker:
+            print(f"   {idx}. {rival} (Public: {ticker})")
+        else:
+            print(f"   {idx}. {rival} (Private)")
+    print(f"📋 Market Overview: {result['description'][:200]}...")
+    print(f"{'='*70}\n")
 
     updated_state = dict(state)
     updated_state["competitors"] = result["competitors"]

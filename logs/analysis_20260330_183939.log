@@ -1,0 +1,10 @@
+2026-03-30 18:40:19,700 - root - ERROR - Workflow execution failed: unterminated string literal (detected at line 160) (strategy_agent.py, line 160)
+Traceback (most recent call last):
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\main.py", line 154, in main
+    app = get_app()
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\graph.py", line 94, in get_app
+    from agents import competitor_finder, metrics_agent, news_researcher, synthesis_agent, strategy_agent
+  File "C:\Users\Saiteja\Desktop\3-1\RND-agentic-system\agents\strategy_agent.py", line 160
+    story.append(Paragraph("<hr/>\", styles["Normal"]))
+                                                   ^
+SyntaxError: unterminated string literal (detected at line 160)

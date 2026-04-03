@@ -1,0 +1,27 @@
+2026-04-03 15:27:37,460 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:27:43,658 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:28:10,162 - tools.html_fetch - WARNING - HTML fetch failed for https://support.lenovo.com/us/en/solutions/msh500006: HTTPSConnectionPool(host='support.lenovo.com', port=443): Read timed out. (read timeout=10)
+2026-04-03 15:28:21,327 - tools.html_fetch - WARNING - HTML fetch failed for https://support.lenovo.com/cf/uk/solutions/ht515311-what-are-the-new-features-of-windows-11: HTTPSConnectionPool(host='support.lenovo.com', port=443): Read timed out. (read timeout=10)
+2026-04-03 15:28:23,336 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:28:37,575 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:28:47,957 - tools.html_fetch - WARNING - HTML fetch failed for https://www.dell.com/support/manuals/en-us/dell-update/dellupdate_rn/whats-new-in-dell-update-version-41?guid=guid-169d8883-31ea-4052-9dab-a8490fe6ce84&lang=en-us: 403 Client Error: Forbidden for url: https://www.dell.com/support/manuals/en-us/dell-update/dellupdate_rn/whats-new-in-dell-update-version-41?guid=guid-169d8883-31ea-4052-9dab-a8490fe6ce84&lang=en-us
+2026-04-03 15:28:49,718 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:29:05,736 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:29:13,286 - tools.html_fetch - WARNING - HTML fetch failed for https://blog.techliance.com/whats-new-in-ios/: 403 Client Error: Forbidden for url: https://blog.techliance.com/whats-new-in-ios/
+2026-04-03 15:29:18,856 - tools.html_fetch - WARNING - HTML fetch failed for https://www.omacomp.com/exploring-the-new-apple-ios-key-features-improvements-and-what-users-should-know/: 406 Client Error: Not Acceptable for url: https://www.omacomp.com/exploring-the-new-apple-ios-key-features-improvements-and-what-users-should-know/
+2026-04-03 15:29:20,721 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:29:35,193 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:29:54,625 - tools.html_fetch - WARNING - HTML fetch failed for https://www.acer.com/us-en/new-products: HTTPSConnectionPool(host='www.acer.com', port=443): Read timed out. (read timeout=10)
+2026-04-03 15:29:56,393 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:30:52,937 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-04-03 15:30:52,940 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.88 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-04-03 15:31:03,394 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:31:10,475 - tools.html_fetch - WARNING - HTML fetch failed for https://rog-forum.asus.com/t5/changelogs/bg-p/Handheld_Release_Notes: 403 Client Error: Forbidden for url: https://rog-forum.asus.com/t5/changelogs/bg-p/Handheld_Release_Notes
+2026-04-03 15:31:11,588 - tools.html_fetch - WARNING - HTML fetch failed for https://rog-forum.asus.com/t5/changelogs/changelog-november-2025-rog-ally-ally-x-xbox-ally-xbox-ally-x/ba-p/1124876: 403 Client Error: Forbidden for url: https://rog-forum.asus.com/t5/changelogs/changelog-november-2025-rog-ally-ally-x-xbox-ally-xbox-ally-x/ba-p/1124876
+2026-04-03 15:31:13,316 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:31:26,962 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:31:31,635 - agents.utils - INFO - SynthesisAgent: starting analysis for lenovo
+2026-04-03 15:31:33,452 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-03 15:31:51,199 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-03 15:31:51,339 - agents.strategy_agent - INFO - StrategyAgent: generating reports
+2026-04-03 15:31:52,232 - agents.strategy_agent - WARNING - Matplotlib not installed or no scoring data. Skipping chart generation.

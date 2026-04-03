@@ -11,7 +11,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 def run(state: AgentState) -> AgentState:
-    print(f"\n--- [AGENT] MetricsAgent collecting financial data for: {state['company_name']} & its rivals ---")
+    """Collect premium financial metrics with market intelligence."""
+    print(f"\n{'='*70}")
+    print(f"📊 [AGENT] MetricsAgent - Financial Intelligence Gathering")
+    print(f"{'='*70}")
+    print(f"Analyzing: {state['company_name']} + {len(state.get('competitors', []))} competitors\n")
     
     # Build list of (name, ticker) tuples
     companies = [(state["company_name"], state.get("ticker"))]
@@ -23,12 +27,12 @@ def run(state: AgentState) -> AgentState:
 
     for company, ticker in companies:
         if ticker:
-            print(f"Fetching real-time market metrics for: {company} (Ticker: {ticker})...")
+            print(f"  Fetching LIVE market data: {company} ({ticker})...")
             result = get_metrics(ticker)
             # Ensure the Company name is correct in the result
             result["Company"] = company
         else:
-            print(f"Skipping market metrics for {company} (Private/No Ticker).")
+            print(f"  ⏭️  Skipping {company} (Private company - no public market data)")
             result = {
                 "Company": company,
                 "Ticker": None,
@@ -39,12 +43,12 @@ def run(state: AgentState) -> AgentState:
         
         metrics.append(result)
         
-        # Display short summary of metrics if available
+        # Display professional metrics summary
         if result.get("Ticker"):
             price = result.get("CurrentPrice", "N/A")
             change = result.get("WeekChangePct", "N/A")
             market_cap = result.get("MarketCap", "N/A")
-            print(f"  Result: Price={price}, 7D%={change}, Cap={market_cap}")
+            print(f"     💰 Price: ${price} | 7D Change: {change}% | Market Cap: {market_cap}\n")
 
     updated_state = dict(state)
     updated_state["metrics"] = metrics
