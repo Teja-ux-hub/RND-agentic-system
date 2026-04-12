@@ -1,0 +1,29 @@
+2026-04-11 18:59:02,181 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 18:59:10,639 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 18:59:19,917 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:00:17,294 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-04-11 19:00:17,295 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.49 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-04-11 19:00:31,209 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:00:45,682 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:01:44,429 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-04-11 19:01:44,430 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.17 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-04-11 19:02:03,901 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:02:27,513 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:02:46,115 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:02:57,435 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:03:18,675 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:03:38,759 - tools.html_fetch - WARNING - HTML fetch failed for https://ftp.decadental.com/blog/ftp.decadental.com/unveiling-the-latest-oppo-innovations-whats-new-1764796912: HTTPSConnectionPool(host='ftp.decadental.com', port=443): Max retries exceeded with url: /blog/ftp.decadental.com/unveiling-the-latest-oppo-innovations-whats-new-1764796912 (Caused by ConnectTimeoutError(<HTTPSConnection(host='ftp.decadental.com', port=443) at 0x1420bf6d310>, 'Connection to ftp.decadental.com timed out. (connect timeout=10)'))
+2026-04-11 19:03:39,072 - tools.html_fetch - WARNING - HTML fetch failed for https://ftp.broadwayinfosys.com/blog/oppo-a57-update-in-2022-what-you-need-to-know-1764798120: HTTPSConnectionPool(host='ftp.broadwayinfosys.com', port=443): Max retries exceeded with url: /blog/oppo-a57-update-in-2022-what-you-need-to-know-1764798120 (Caused by NameResolutionError("HTTPSConnection(host='ftp.broadwayinfosys.com', port=443): Failed to resolve 'ftp.broadwayinfosys.com' ([Errno 11001] getaddrinfo failed)"))
+2026-04-11 19:03:41,048 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:04:38,105 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-04-11 19:04:38,110 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.46 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-04-11 19:04:55,481 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:05:06,464 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:06:05,645 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 504 Gateway Timeout"
+2026-04-11 19:06:05,648 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._request_once in 1.9 seconds as it raised ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'The request timed out. Please try again.', 'status': 'DEADLINE_EXCEEDED'}}.
+2026-04-11 19:06:27,579 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:06:35,274 - agents.utils - INFO - SynthesisAgent: starting analysis for vivo
+2026-04-11 19:06:35,805 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 19:07:03,396 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 19:07:03,410 - agents.strategy_agent - INFO - StrategyAgent: generating reports
+2026-04-11 19:07:03,688 - agents.strategy_agent - WARNING - Matplotlib not installed or no scoring data. Skipping chart generation.

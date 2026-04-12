@@ -1,0 +1,4 @@
+2026-04-11 18:52:51,907 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 18:52:58,996 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-04-11 18:53:06,526 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-04-11 18:54:06,663 - agents.news_researcher - WARNING - NewsResearcher evidence gathering failed for vivo: The read operation timed out
