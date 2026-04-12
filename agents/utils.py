@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 def get_gemini_llm(
     model_env_var: str = "GEMINI_MODEL",
-    default_model: str = "gemini-2.0-flash",
+    default_model: str = "gemini-2.5-flash",
     temperature: float = 0.2,
 ) -> ChatGoogleGenerativeAI | None:
     """Get a Gemini LLM instance if the API key is present."""

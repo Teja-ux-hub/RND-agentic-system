@@ -17,6 +17,29 @@ class NewsItem(TypedDict):
     published_at: str
 
 
+class CompetitorEvent(BaseModel):
+    competitor: str = Field(description="The competitor involved in the event")
+    event_type: str = Field(description="Type of event: launch, pricing, partnership, expansion, etc.")
+    description: str = Field(description="Brief description of the event")
+    source_url: str = Field(description="URL of the news source")
+
+
+class EventImpact(BaseModel):
+    event_description: str = Field(description="The event being analyzed")
+    competitor: str = Field(description="The competitor involved")
+    user_impact: str = Field(description="Estimated impact on users/customers")
+    revenue_impact: str = Field(description="Estimated impact on revenue")
+    confidence_score: float = Field(description="Confidence in the estimation (0.0-1.0)")
+
+
+class StrategicDecision(BaseModel):
+    action: str = Field(description="Specific recommended action")
+    reason: str = Field(description="Strategic reasoning linked to a specific event")
+    evidence: str = Field(description="Supporting evidence/data point")
+    expected_outcome: str = Field(description="Expected business outcome")
+    confidence: float = Field(description="Confidence in the recommendation (0.0-1.0)")
+
+
 class ProductMove(TypedDict):
     name: str
     type: str
@@ -45,12 +68,16 @@ class Strength(BaseModel):
     description: str = Field(description="Detailed description of the strength")
     impact: str = Field(description="Impact on win-rate, churn, or market position")
     evidence_links: list[str] = Field(description="URLs to evidence backing this claim")
+    related_competitor: str | None = Field(default=None, description="The competitor this strength provides an advantage against")
+    related_event: str | None = Field(default=None, description="The specific market event validating this strength")
 
 
 class Weakness(BaseModel):
     description: str = Field(description="Detailed description of the weakness")
     impact: str = Field(description="Impact on win-rate, churn, or market position")
     evidence_links: list[str] = Field(description="URLs to evidence backing this claim")
+    related_competitor: str | None = Field(default=None, description="The competitor exploiting this weakness")
+    related_event: str | None = Field(default=None, description="The specific market event highlighting this weakness")
 
 
 class Recommendation(BaseModel):
@@ -81,6 +108,9 @@ class AgentState(TypedDict):
     actions: list[Recommendation]
     battlecard: Battlecard
     news_data: dict[str, list[NewsItem]]
+    extracted_events: list[CompetitorEvent]
+    impact_estimates: list[EventImpact]
+    strategic_decisions: list[StrategicDecision]
     metrics: list[MetricRow]
     scoring_matrices: dict[str, ScoringMatrix]
     strategy_summary: str
@@ -91,19 +121,34 @@ class AgentState(TypedDict):
 
 def get_app():
     """Build and compile the LangGraph application."""
-    from agents import competitor_finder, metrics_agent, news_researcher, synthesis_agent, strategy_agent
+    from agents import (
+        competitor_finder, 
+        metrics_agent, 
+        news_researcher, 
+        evidence_extractor,
+        impact_estimator,
+        synthesis_agent, 
+        decision_agent,
+        strategy_agent
+    )
 
     graph = StateGraph(AgentState)
     graph.add_node("find_competitors", competitor_finder.run)
     graph.add_node("research_news", news_researcher.run)
+    graph.add_node("extract_evidence", evidence_extractor.run)
     graph.add_node("get_metrics", metrics_agent.run)
+    graph.add_node("estimate_impact", impact_estimator.run)
     graph.add_node("synthesize_insights", synthesis_agent.run)
+    graph.add_node("generate_decisions", decision_agent.run)
     graph.add_node("write_strategy", strategy_agent.run)
 
     graph.set_entry_point("find_competitors")
     graph.add_edge("find_competitors", "research_news")
-    graph.add_edge("research_news", "get_metrics")
-    graph.add_edge("get_metrics", "synthesize_insights")
-    graph.add_edge("synthesize_insights", "write_strategy")
+    graph.add_edge("research_news", "extract_evidence")
+    graph.add_edge("extract_evidence", "get_metrics")
+    graph.add_edge("get_metrics", "estimate_impact")
+    graph.add_edge("estimate_impact", "synthesize_insights")
+    graph.add_edge("synthesize_insights", "generate_decisions")
+    graph.add_edge("generate_decisions", "write_strategy")
     graph.add_edge("write_strategy", END)
     return graph.compile()

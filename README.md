@@ -156,7 +156,7 @@ GEMINI_API_KEY=...
 TAVILY_API_KEY=...
 
 # AI Model Selection
-GEMINI_MODEL=gemini-2.0-flash
+GEMINI_MODEL=gemini-2.5-flash
 GEMINI_MODEL_FLASH=gemini-1.5-flash
 
 # Search Configuration

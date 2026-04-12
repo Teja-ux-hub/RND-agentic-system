@@ -121,20 +121,33 @@ def _save_pdf_summary(state: AgentState, reports_dir: str) -> str:
     if chart_path and os.path.exists(chart_path):
         story.append(Image(chart_path, width=500, height=250))
         story.append(Spacer(1, 12))
-    else:
-        story.append(Paragraph("<i>Note: Competitive comparison chart unavailable (install matplotlib to enable)</i>", styles["BodyText"]))
-        story.append(Spacer(1, 12))
+
+    # Strategic Decisions Section (New)
+    if state.get("strategic_decisions"):
+        story.append(Spacer(1, 16))
+        story.append(Paragraph("🚀 High-Impact Strategic Roadmap", styles["Heading2"]))
+        story.append(Spacer(1, 8))
+        for idx, decision in enumerate(state["strategic_decisions"], 1):
+            story.append(Paragraph(f"<b>Decision {idx}: {decision.action}</b>", styles["BodyText"]))
+            story.append(Paragraph(f"   <i>Reason: {decision.reason}</i>", styles["BodyText"]))
+            story.append(Paragraph(f"   <i>Evidence: {decision.evidence}</i>", styles["BodyText"]))
+            story.append(Paragraph(f"   <i>Outcome: {decision.expected_outcome} | Confidence: {int(decision.confidence*100)}%</i>", styles["BodyText"]))
+            story.append(Spacer(1, 10))
 
     # Strengths Section
     if state.get("strengths"):
         story.append(Spacer(1, 16))
-        story.append(Paragraph("🎯 Strategic Strengths", styles["Heading2"]))
+        story.append(Paragraph("🎯 Evidence-Backed Strengths", styles["Heading2"]))
         story.append(Spacer(1, 8))
         for idx, s in enumerate(state["strengths"], 1):
-            story.append(Paragraph(f"<b>{idx}. {s.get('description', 'N/A')}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Business Impact: {s.get('impact', 'N/A')}</i>", styles["BodyText"]))
-            if s.get("evidence_links"):
-                story.append(Paragraph(f"   <link href='{s['evidence_links'][0]}' color='#2563eb'>Source Evidence</link>", styles["BodyText"]))
+            desc = s.description if hasattr(s, 'description') else s.get('description', 'N/A')
+            impact = s.impact if hasattr(s, 'impact') else s.get('impact', 'N/A')
+            links = s.evidence_links if hasattr(s, 'evidence_links') else s.get('evidence_links', [])
+            
+            story.append(Paragraph(f"<b>{idx}. {desc}</b>", styles["BodyText"]))
+            story.append(Paragraph(f"   <i>Business Impact: {impact}</i>", styles["BodyText"]))
+            if links:
+                story.append(Paragraph(f"   <link href='{links[0]}' color='#2563eb'>Source Evidence</link>", styles["BodyText"]))
             story.append(Spacer(1, 10))
 
     # Weaknesses Section
@@ -143,27 +156,30 @@ def _save_pdf_summary(state: AgentState, reports_dir: str) -> str:
         story.append(Paragraph("⚠️ Strategic Vulnerabilities", styles["Heading2"]))
         story.append(Spacer(1, 8))
         for idx, w in enumerate(state["weaknesses"], 1):
-            story.append(Paragraph(f"<b>{idx}. {w.get('description', 'N/A')}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Risk Impact: {w.get('impact', 'N/A')}</i>", styles["BodyText"]))
-            if w.get("evidence_links"):
-                story.append(Paragraph(f"   <link href='{w['evidence_links'][0]}' color='#dc2626'>Risk Evidence</link>", styles["BodyText"]))
+            desc = w.description if hasattr(w, 'description') else w.get('description', 'N/A')
+            impact = w.impact if hasattr(w, 'impact') else w.get('impact', 'N/A')
+            links = w.evidence_links if hasattr(w, 'evidence_links') else w.get('evidence_links', [])
+
+            story.append(Paragraph(f"<b>{idx}. {desc}</b>", styles["BodyText"]))
+            story.append(Paragraph(f"   <i>Risk Impact: {impact}</i>", styles["BodyText"]))
+            if links:
+                story.append(Paragraph(f"   <link href='{links[0]}' color='#dc2626'>Risk Evidence</link>", styles["BodyText"]))
             story.append(Spacer(1, 10))
 
     story.append(PageBreak())
 
-    # Strategic Recommendations
-    if state.get("actions"):
-        story.append(Paragraph("🚀 Strategic Action Plan", styles["Heading2"]))
+    # Extracted Events (New Section)
+    if state.get("extracted_events"):
+        story.append(Paragraph("📰 Critical Market Events", styles["Heading2"]))
         story.append(Spacer(1, 8))
-        for idx, action in enumerate(state["actions"], 1):
-            timeframe = action.get('timeframe', 'Now')
-            story.append(Paragraph(f"<b>Action {idx}: {action.get('action_title', 'N/A')}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   Timeline: {timeframe} | Why Now: {action.get('why_now', 'Critical')}", styles["BodyText"]))
-            story.append(Paragraph(f"   Expected Impact: {action.get('expected_metric', 'N/A')}", styles["BodyText"]))
-            story.append(Spacer(1, 10))
+        for idx, event in enumerate(state["extracted_events"][:10], 1):
+            story.append(Paragraph(f"<b>{idx}. {event.competitor}: {event.event_type.capitalize()}</b>", styles["BodyText"]))
+            story.append(Paragraph(f"   <i>{event.description}</i>", styles["BodyText"]))
+            story.append(Paragraph(f"   <link href='{event.source_url}' color='#2563eb'>Read Full Article</link>", styles["BodyText"]))
+            story.append(Spacer(1, 8))
         story.append(Spacer(1, 16))
 
-    # Add summary text from SynthesisAgent
+    # Add summary text
     summary_text = state.get("strategy_summary", "No summary available.").replace("\n", "<br/>")
     story.append(Paragraph("📊 Synthesized Market Analysis", styles["Heading2"]))
     story.append(Spacer(1, 8))
@@ -190,7 +206,7 @@ def run(state: AgentState) -> AgentState:
     print("Generating Excel export for market metrics...")
     excel_path = _save_metrics_excel(state.get("metrics", []), state["company_name"], data_dir)
     
-    print("Generating PDF report with competitive chart and analysis...")
+    print("Generating PDF report with enhanced strategic intelligence...")
     pdf_path = _save_pdf_summary(state, reports_dir)
     
     print(f"\nStrategy report generated: {pdf_path}")

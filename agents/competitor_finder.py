@@ -86,7 +86,7 @@ def _call_gemini_for_competitors(
     raw_results: list[dict],
     manual_competitors: list[str],
 ) -> dict[str, Any]:
-    llm = get_gemini_llm(model_env_var="GEMINI_MODEL", default_model="gemini-2.0-flash", temperature=0.1)
+    llm = get_gemini_llm(model_env_var="GEMINI_MODEL", default_model="gemini-2.5-flash", temperature=0.1)
     if not llm:
         heuristic = [item.get("title", "") for item in raw_results]
         return {
