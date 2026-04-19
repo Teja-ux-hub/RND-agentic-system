@@ -89,8 +89,10 @@ def _call_gemini_for_competitors(
     llm = get_gemini_llm(model_env_var="GEMINI_MODEL", default_model="gemini-2.5-flash", temperature=0.1)
     if not llm:
         heuristic = [item.get("title", "") for item in raw_results]
+        names = _extract_names_heuristically(company_name, heuristic + manual_competitors)
         return {
-            "competitors": _extract_names_heuristically(company_name, heuristic + manual_competitors),
+            "competitors": names,
+            "competitor_meta": [{"name": n, "ticker": None, "competitor_type": "direct", "priority": "medium", "reason": ""} for n in names],
             "ticker": None,
             "description": f"An analysis of {company_name} in the {sector or 'unknown'} sector.",
         }
@@ -104,23 +106,37 @@ def _call_gemini_for_competitors(
             [
                 (
                     "system",
-                    "Identify the top 3-5 competitors, find the stock tickers for BOTH the primary company and its competitors, "
-                    "and provide a 1-sentence description. If a company is private, return null for the ticker. "
-                    "For Indian companies, ensure tickers include '.NS' (e.g., 'ZOMATO.NS'). "
-                    "Return strictly JSON format.",
+                    "You are identifying the most relevant competitors for competitive intelligence tracking.\n"
+                    "Your job is to identify 3-5 high-relevance competitors for the target company and return strictly valid JSON.\n\n"
+                    "Rules:\n"
+                    "1. Prefer direct competitors over generic market peers.\n"
+                    "2. Include substitutes or adjacent competitors only if they materially compete on product, pricing, audience, or positioning.\n"
+                    "3. Find stock tickers for both the primary company and competitors when available.\n"
+                    "4. If a company is private, return null for ticker.\n"
+                    "5. For Indian listed companies, use the '.NS' suffix when appropriate.\n"
+                    "6. For each competitor, include a short reason explaining why it is relevant.\n"
+                    "7. Add a competitor_type field using one of: direct, adjacent, substitute.\n"
+                    "8. Add a priority field using one of: high, medium, low.\n"
+                    "9. Keep descriptions concise and factual.\n"
+                    "10. Return strictly JSON only.\n\n"
+                    "You are part of a competitive intelligence workflow. "
+                    "Prioritize specific, verifiable, recent business evidence. "
+                    "Avoid generic strategy language. Prefer concrete facts over vague summaries. "
+                    "Do not invent metrics, product names, dates, pricing, or partnerships.",
                 ),
                 (
                     "human",
                     "Research {company_name} in the {sector} industry.\n"
-                    "Context: {context}\n"
-                    "User suggestions: {manual_competitors}\n"
-                    "Format: {{\n"
-                    "  'primary_ticker': 'TICKER_OR_NULL',\n"
-                    "  'competitors': [\n"
-                    "    {{'name': 'Name1', 'ticker': 'TICK1_OR_NULL'}},\n"
-                    "    {{'name': 'Name2', 'ticker': 'TICK2_OR_NULL'}}\n"
-                    "  ],\n"
-                    "  'description': 'One sentence about the primary company.'\n"
+                    "Context:\n{context}\n"
+                    "User suggestions:\n{manual_competitors}\n\n"
+                    "Return JSON in exactly this shape:\n"
+                    "{{\n"
+                    "  \"primary_company\": \"{company_name}\",\n"
+                    "  \"primary_ticker\": \"TICKER_OR_NULL\",\n"
+                    "  \"description\": \"One sentence about the primary company.\",\n"
+                    "  \"competitors\": [\n"
+                    "    {{\"name\": \"Name1\", \"ticker\": \"TICK1_OR_NULL\", \"competitor_type\": \"direct\", \"priority\": \"high\", \"reason\": \"Why this competitor is strategically relevant\"}}\n"
+                    "  ]\n"
                     "}}"
                 ),
             ]
@@ -139,13 +155,26 @@ def _call_gemini_for_competitors(
         # Process and deduplicate competitors
         comp_data = response.get("competitors", [])
         deduped_names = _dedupe_competitors([c["name"] for c in comp_data], company_name)
-        
+
         # Build competitor ticker map
         comp_tickers = {c["name"]: c.get("ticker") for c in comp_data if c["name"] in deduped_names}
-        
+
+        # Build enriched competitor metadata
+        comp_meta = [
+            {
+                "name": c["name"],
+                "ticker": c.get("ticker"),
+                "competitor_type": c.get("competitor_type", "direct"),
+                "priority": c.get("priority", "medium"),
+                "reason": c.get("reason", ""),
+            }
+            for c in comp_data if c["name"] in deduped_names
+        ]
+
         return {
             "competitors": deduped_names,
             "competitor_tickers": comp_tickers,
+            "competitor_meta": comp_meta,
             "ticker": response.get("primary_ticker"),
             "description": response.get("description", ""),
         }
@@ -156,6 +185,7 @@ def _call_gemini_for_competitors(
         return {
             "competitors": names,
             "competitor_tickers": {name: None for name in names},
+            "competitor_meta": [{"name": n, "ticker": None, "competitor_type": "direct", "priority": "medium", "reason": ""} for n in names],
             "ticker": None,
             "description": f"An analysis of {company_name} in the {sector or 'unknown'} sector.",
         }
@@ -195,5 +225,6 @@ def run(state: AgentState) -> AgentState:
     updated_state["competitors"] = result["competitors"]
     updated_state["ticker"] = result["ticker"]
     updated_state["competitor_tickers"] = result["competitor_tickers"]
+    updated_state["competitor_meta"] = result.get("competitor_meta", [])
     updated_state["company_description"] = result["description"]
     return updated_state

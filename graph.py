@@ -17,11 +17,26 @@ class NewsItem(TypedDict):
     published_at: str
 
 
+class CompetitorMeta(TypedDict):
+    name: str
+    ticker: str | None
+    competitor_type: str   # direct | adjacent | substitute
+    priority: str          # high | medium | low
+    reason: str
+
+
 class CompetitorEvent(BaseModel):
     competitor: str = Field(description="The competitor involved in the event")
-    event_type: str = Field(description="Type of event: launch, pricing, partnership, expansion, etc.")
+    event_type: str = Field(description="Type of event: launch, pricing_change, packaging_change, promotion, partnership, expansion, acquisition, positioning_change, review_signal, customer_experience_signal, hiring_signal, market_claim")
+    priority: str = Field(default="medium", description="high, medium, or low")
     description: str = Field(description="Brief description of the event")
+    evidence_type: str = Field(default="news", description="news, blog, pricing_page, review, website_copy, market_report")
     source_url: str = Field(description="URL of the news source")
+    event_date: str | None = Field(default=None, description="Date of the event if available")
+    old_value: str | None = Field(default=None, description="Previous value for pricing/packaging changes")
+    new_value: str | None = Field(default=None, description="New value for pricing/packaging changes")
+    sentiment_signal: str | None = Field(default=None, description="positive, negative, or mixed for review signals")
+    positioning_angle: str | None = Field(default=None, description="Claimed differentiator for positioning changes")
 
 
 class EventImpact(BaseModel):
@@ -29,14 +44,24 @@ class EventImpact(BaseModel):
     competitor: str = Field(description="The competitor involved")
     user_impact: str = Field(description="Estimated impact on users/customers")
     revenue_impact: str = Field(description="Estimated impact on revenue")
+    market_position_impact: str = Field(default="", description="Impact on market position")
+    pricing_pressure: str = Field(default="", description="Impact on pricing pressure")
+    marketing_message_risk: str = Field(default="", description="Risk to current marketing messaging")
+    urgency: str = Field(default="medium", description="high, medium, or low")
+    alert_priority: str = Field(default="weekly_digest", description="instant, daily_digest, weekly_digest, or none")
     confidence_score: float = Field(description="Confidence in the estimation (0.0-1.0)")
+    rationale: str = Field(default="", description="Brief reasoning behind the estimates")
 
 
 class StrategicDecision(BaseModel):
+    category: str = Field(description="product, pricing, sales_enablement, marketing_content, brand_positioning, or monitoring_alert")
     action: str = Field(description="Specific recommended action")
     reason: str = Field(description="Strategic reasoning linked to a specific event")
+    linked_competitor: str = Field(default="", description="The competitor this action responds to")
+    linked_event: str = Field(default="", description="The specific event driving this action")
     evidence: str = Field(description="Supporting evidence/data point")
     expected_outcome: str = Field(description="Expected business outcome")
+    urgency: str = Field(default="medium", description="high, medium, or low")
     confidence: float = Field(description="Confidence in the recommendation (0.0-1.0)")
 
 
@@ -97,9 +122,10 @@ class AgentState(TypedDict):
     company_name: str
     ticker: str | None
     company_description: str
-    company_profile: dict[str, str]  # Segment, target customer, pricing tier, geo focus
+    company_profile: dict[str, str]
     sector: str | None
     competitors: list[str]
+    competitor_meta: list[CompetitorMeta]        # enriched competitor metadata
     competitor_tickers: dict[str, str | None]
     strengths: list[Strength]
     weaknesses: list[Weakness]
@@ -113,6 +139,8 @@ class AgentState(TypedDict):
     strategic_decisions: list[StrategicDecision]
     metrics: list[MetricRow]
     scoring_matrices: dict[str, ScoringMatrix]
+    synthesis_output: dict                       # full structured synthesis sections
+    alert_summary: dict                          # grouped by instant/daily/weekly
     strategy_summary: str
     pdf_path: str
     excel_path: str

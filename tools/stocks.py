@@ -63,16 +63,22 @@ def get_metrics(name_or_ticker: str) -> dict:
         return {
             "Company": name_or_ticker,
             "Ticker": ticker_symbol,
+            "is_public": True,
             "CurrentPrice": current_price,
             "WeekChangePct": week_change,
             "MarketCap": _format_market_cap(market_cap),
+            "metrics_status": "ok",
+            "notes": "",
         }
     except Exception as exc:  # pragma: no cover
         LOGGER.warning("Stock lookup failed for %s (%s): %s", name_or_ticker, ticker_symbol, exc)
         return {
             "Company": name_or_ticker,
             "Ticker": ticker_symbol,
+            "is_public": True,
             "CurrentPrice": "N/A",
             "WeekChangePct": "N/A",
             "MarketCap": "N/A",
+            "metrics_status": "unavailable_lookup_failed",
+            "notes": str(exc),
         }

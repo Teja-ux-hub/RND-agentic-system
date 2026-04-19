@@ -29,21 +29,25 @@ def run(state: AgentState) -> AgentState:
         if ticker:
             print(f"  Fetching LIVE market data: {company} ({ticker})...")
             result = get_metrics(ticker)
-            # Ensure the Company name is correct in the result
             result["Company"] = company
+            result["is_public"] = True
+            result["metrics_status"] = "ok"
+            result["notes"] = ""
         else:
             print(f"  ⏭️  Skipping {company} (Private company - no public market data)")
             result = {
                 "Company": company,
                 "Ticker": None,
+                "is_public": False,
                 "CurrentPrice": "N/A",
                 "WeekChangePct": "N/A",
                 "MarketCap": "N/A",
+                "metrics_status": "unavailable_private_company",
+                "notes": "No public market data available.",
             }
-        
+
         metrics.append(result)
-        
-        # Display professional metrics summary
+
         if result.get("Ticker"):
             price = result.get("CurrentPrice", "N/A")
             change = result.get("WeekChangePct", "N/A")

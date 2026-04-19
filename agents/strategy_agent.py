@@ -93,105 +93,144 @@ def _save_pdf_summary(state: AgentState, reports_dir: str) -> str:
     pdf_path = os.path.join(reports_dir, f"{safe_name}_strategy_report.pdf")
     doc = SimpleDocTemplate(pdf_path, pagesize=letter, topMargin=24, bottomMargin=24)
     styles = getSampleStyleSheet()
-    story = [
-        Paragraph(f"<b style='color:#2563eb;'>Competitive Intelligence Brief</b>", styles["Title"]),
-        Paragraph(f"<b>{state['company_name']}</b>", styles["Heading1"]),
-        Paragraph(datetime.now().strftime("%B %Y - Confidential Report"), styles["Normal"]),
-        Spacer(1, 16),
-        Paragraph(
-            f"<b>Executive Overview:</b> {state.get('company_description', 'Comprehensive competitive analysis')}",
-            styles["BodyText"]
-        ),
-        Spacer(1, 8),
-    ]
-    
-    # Key Competitors
-    competitors_list = state.get('competitors', [])
-    if competitors_list:
-        story.append(
-            Paragraph(
-                f"<b>Market Landscape:</b> Analyzing {len(competitors_list)} key competitors: {', '.join(competitors_list[:5])}{'...' if len(competitors_list) > 5 else ''}",
-                styles["BodyText"]
-            )
-        )
-        Spacer(1, 10)
+    S = styles
 
-    # Add chart
-    chart_path = _create_chart(state.get("scoring_matrices", {}), state["company_name"], reports_dir)
-    if chart_path and os.path.exists(chart_path):
-        story.append(Image(chart_path, width=500, height=250))
-        story.append(Spacer(1, 12))
+    def h1(text): return Paragraph(f"<b>{text}</b>", S["Heading1"])
+    def h2(text): return Paragraph(f"<b>{text}</b>", S["Heading2"])
+    def body(text): return Paragraph(str(text).replace("\n", "<br/>"), S["BodyText"])
+    def bullet(text): return Paragraph(f"• {text}", S["BodyText"])
+    def sp(): return Spacer(1, 10)
 
-    # Strategic Decisions Section (New)
-    if state.get("strategic_decisions"):
-        story.append(Spacer(1, 16))
-        story.append(Paragraph("🚀 High-Impact Strategic Roadmap", styles["Heading2"]))
-        story.append(Spacer(1, 8))
-        for idx, decision in enumerate(state["strategic_decisions"], 1):
-            story.append(Paragraph(f"<b>Decision {idx}: {decision.action}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Reason: {decision.reason}</i>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Evidence: {decision.evidence}</i>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Outcome: {decision.expected_outcome} | Confidence: {int(decision.confidence*100)}%</i>", styles["BodyText"]))
-            story.append(Spacer(1, 10))
+    story = []
 
-    # Strengths Section
-    if state.get("strengths"):
-        story.append(Spacer(1, 16))
-        story.append(Paragraph("🎯 Evidence-Backed Strengths", styles["Heading2"]))
-        story.append(Spacer(1, 8))
-        for idx, s in enumerate(state["strengths"], 1):
-            desc = s.description if hasattr(s, 'description') else s.get('description', 'N/A')
-            impact = s.impact if hasattr(s, 'impact') else s.get('impact', 'N/A')
-            links = s.evidence_links if hasattr(s, 'evidence_links') else s.get('evidence_links', [])
-            
-            story.append(Paragraph(f"<b>{idx}. {desc}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Business Impact: {impact}</i>", styles["BodyText"]))
-            if links:
-                story.append(Paragraph(f"   <link href='{links[0]}' color='#2563eb'>Source Evidence</link>", styles["BodyText"]))
-            story.append(Spacer(1, 10))
+    # ── 1. Executive Summary ──────────────────────────────────────────────
+    story += [h1("1. Executive Summary"), sp(),
+              body(f"<b>Company:</b> {state['company_name']}"),
+              body(datetime.now().strftime("%B %Y — Confidential Report")), sp(),
+              body(state.get("company_description", "Comprehensive competitive analysis.")), sp()]
 
-    # Weaknesses Section
-    if state.get("weaknesses"):
-        story.append(Spacer(1, 16))
-        story.append(Paragraph("⚠️ Strategic Vulnerabilities", styles["Heading2"]))
-        story.append(Spacer(1, 8))
-        for idx, w in enumerate(state["weaknesses"], 1):
-            desc = w.description if hasattr(w, 'description') else w.get('description', 'N/A')
-            impact = w.impact if hasattr(w, 'impact') else w.get('impact', 'N/A')
-            links = w.evidence_links if hasattr(w, 'evidence_links') else w.get('evidence_links', [])
+    # ── 2. Company Overview ───────────────────────────────────────────────
+    story += [PageBreak(), h1("2. Company Overview"), sp(),
+              body(state.get("company_description", "N/A")), sp()]
 
-            story.append(Paragraph(f"<b>{idx}. {desc}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>Risk Impact: {impact}</i>", styles["BodyText"]))
-            if links:
-                story.append(Paragraph(f"   <link href='{links[0]}' color='#dc2626'>Risk Evidence</link>", styles["BodyText"]))
-            story.append(Spacer(1, 10))
+    # ── 3. Competitor Watchlist ───────────────────────────────────────────
+    story += [h1("3. Competitor Watchlist"), sp()]
+    comp_meta = state.get("competitor_meta", [])
+    if comp_meta:
+        table_data = [["Company", "Type", "Priority", "Reason"]]
+        for c in comp_meta:
+            table_data.append([c.get("name",""), c.get("competitor_type",""), c.get("priority",""), c.get("reason","")[:80]])
+        t = Table(table_data, colWidths=[100, 70, 60, 270])
+        t.setStyle(TableStyle([
+            ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#1e293b")),
+            ("TEXTCOLOR",  (0,0), (-1,0), colors.white),
+            ("FONTSIZE",   (0,0), (-1,-1), 8),
+            ("GRID",       (0,0), (-1,-1), 0.4, colors.HexColor("#e2e8f0")),
+            ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#f8fafc")]),
+        ]))
+        story += [t, sp()]
+    else:
+        for c in state.get("competitors", []):
+            story.append(bullet(c))
+    story.append(sp())
 
-    story.append(PageBreak())
+    # ── 4. Key Competitor Moves This Week ─────────────────────────────────
+    story += [h1("4. Key Competitor Moves This Week"), sp()]
+    synthesis = state.get("synthesis_output", {})
+    for move in synthesis.get("competitor_moves", []):
+        story.append(bullet(str(move)))
+    story.append(sp())
 
-    # Extracted Events (New Section)
-    if state.get("extracted_events"):
-        story.append(Paragraph("📰 Critical Market Events", styles["Heading2"]))
-        story.append(Spacer(1, 8))
-        for idx, event in enumerate(state["extracted_events"][:10], 1):
-            story.append(Paragraph(f"<b>{idx}. {event.competitor}: {event.event_type.capitalize()}</b>", styles["BodyText"]))
-            story.append(Paragraph(f"   <i>{event.description}</i>", styles["BodyText"]))
-            story.append(Paragraph(f"   <link href='{event.source_url}' color='#2563eb'>Read Full Article</link>", styles["BodyText"]))
-            story.append(Spacer(1, 8))
-        story.append(Spacer(1, 16))
+    # ── 5. Pricing Intelligence ───────────────────────────────────────────
+    story += [h1("5. Pricing Intelligence"), sp()]
+    for item in synthesis.get("pricing_insights", []):
+        story.append(bullet(str(item)))
+    pricing_events = [e for e in state.get("extracted_events", []) if "pricing" in getattr(e, "event_type", "")]
+    for e in pricing_events:
+        old = getattr(e, "old_value", None)
+        new = getattr(e, "new_value", None)
+        change_str = f" ({old} → {new})" if old and new else ""
+        story.append(bullet(f"{e.competitor}: {e.description}{change_str}"))
+        if e.source_url:
+            story.append(Paragraph(f"   <link href='{e.source_url}' color='#2563eb'>Source</link>", S["BodyText"]))
+    story.append(sp())
 
-    # Add summary text
-    summary_text = state.get("strategy_summary", "No summary available.").replace("\n", "<br/>")
-    story.append(Paragraph("📊 Synthesized Market Analysis", styles["Heading2"]))
-    story.append(Spacer(1, 8))
-    story.append(Paragraph(summary_text, styles["BodyText"]))
-    
+    # ── 6. Product and Feature Updates ───────────────────────────────────
+    story += [h1("6. Product and Feature Updates"), sp()]
+    for item in synthesis.get("product_and_feature_insights", []):
+        story.append(bullet(str(item)))
+    story.append(sp())
+
+    # ── 7. Reviews and Customer Signals ──────────────────────────────────
+    story += [h1("7. Reviews and Customer Signals"), sp()]
+    for item in synthesis.get("review_and_customer_signal_insights", []):
+        story.append(bullet(str(item)))
+    review_events = [e for e in state.get("extracted_events", []) if "review" in getattr(e, "event_type", "") or "customer" in getattr(e, "event_type", "")]
+    for e in review_events:
+        sentiment = getattr(e, "sentiment_signal", None)
+        label = f" [{sentiment}]" if sentiment else ""
+        story.append(bullet(f"{e.competitor}{label}: {e.description}"))
+    story.append(sp())
+
+    # ── 8. Messaging and Positioning Shifts ──────────────────────────────
+    story += [h1("8. Messaging and Positioning Shifts"), sp()]
+    for item in synthesis.get("messaging_and_positioning_insights", []):
+        story.append(bullet(str(item)))
+    story.append(sp())
+
+    # ── 9. Market and News Intelligence ──────────────────────────────────
+    story += [h1("9. Market and News Intelligence"), sp()]
+    for trend in state.get("market_trends", []):
+        story.append(bullet(str(trend)))
+    story.append(sp())
+
+    # ── 10. Risks and Opportunities ──────────────────────────────────────
+    story += [PageBreak(), h1("10. Risks and Opportunities"), sp(), h2("Risks to Monitor")]
+    for r in synthesis.get("risks_to_monitor", []):
+        story.append(bullet(str(r)))
+    story += [sp(), h2("Opportunities to Exploit")]
+    for o in synthesis.get("opportunities_to_exploit", []):
+        story.append(bullet(str(o)))
+    story.append(sp())
+
+    # ── 11. Recommended Actions ───────────────────────────────────────────
+    story += [h1("11. Recommended Actions"), sp()]
+    for idx, decision in enumerate(state.get("strategic_decisions", []), 1):
+        cat = getattr(decision, "category", "general")
+        action = getattr(decision, "action", "")
+        reason = getattr(decision, "reason", "")
+        outcome = getattr(decision, "expected_outcome", "")
+        urgency = getattr(decision, "urgency", "")
+        conf = getattr(decision, "confidence", 0)
+        story.append(body(f"<b>{idx}. [{cat.upper()}] {action}</b>"))
+        story.append(body(f"   Reason: {reason}"))
+        story.append(body(f"   Expected Outcome: {outcome} | Urgency: {urgency} | Confidence: {int(conf*100)}%"))
+        story.append(sp())
+
+    # ── 12. Alerts Summary ────────────────────────────────────────────────
+    story += [h1("12. Alerts Summary"), sp()]
+    alert_summary = state.get("alert_summary", {})
+    for level in ["instant", "daily_digest", "weekly_digest"]:
+        items = alert_summary.get(level, [])
+        if items:
+            story.append(h2(f"{level.replace('_', ' ').title()} ({len(items)})"))
+            for a in items:
+                story.append(bullet(f"{a.get('competitor','')}: {a.get('event','')} — {a.get('rationale','')}"))
+            story.append(sp())
+
+    # ── 13. Evidence Appendix ─────────────────────────────────────────────
+    story += [PageBreak(), h1("13. Evidence Appendix"), sp()]
+    for idx, event in enumerate(state.get("extracted_events", []), 1):
+        story.append(body(f"<b>{idx}. {event.competitor} — {getattr(event,'event_type','').replace('_',' ').title()}</b>"))
+        story.append(body(f"   {event.description}"))
+        if event.source_url:
+            story.append(Paragraph(f"   <link href='{event.source_url}' color='#2563eb'>Source: {event.source_url[:80]}</link>", S["BodyText"]))
+        story.append(sp())
+
     # Footer
-    story.append(Spacer(1, 24))
-    story.append(Paragraph("<hr/>", styles["Normal"]))
-    story.append(Paragraph(
-        "<i>This report is confidential and intended for authorized use only. For questions, contact your strategic advisor.</i>",
-        styles["BodyText"]
-    ))
+    story += [Spacer(1, 24),
+              Paragraph("<hr/>", S["Normal"]),
+              Paragraph("<i>Confidential. For authorized use only.</i>", S["BodyText"])]
 
     doc.build(story)
     return pdf_path

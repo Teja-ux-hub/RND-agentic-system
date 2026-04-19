@@ -32,24 +32,48 @@ def run(state: AgentState) -> AgentState:
     strengths = [s.model_dump() if hasattr(s, 'model_dump') else s for s in state.get("strengths", [])]
     weaknesses = [w.model_dump() if hasattr(w, 'model_dump') else w for w in state.get("weaknesses", [])]
     
-    prompt = f"""
-    You are a senior strategic advisor for {company}. Based on the analyzed market intelligence, generate 5-7 high-impact strategic decisions.
-    
-    Each decision MUST include:
-    1. action: (specific, measurable action)
-    2. reason: (strategic reasoning linked to a specific market event)
-    3. evidence: (the data point or event supporting this)
-    4. expected_outcome: (measurable business impact)
-    5. confidence: (0.0 to 1.0)
-    
-    Intelligence Context:
-    - Market Events: {json.dumps(events)}
-    - Impact Analysis: {json.dumps(impacts)}
-    - Synthesized Strengths: {json.dumps(strengths)}
-    - Synthesized Weaknesses: {json.dumps(weaknesses)}
-    
-    Return exactly 5-7 decisions in a DecisionOutput object.
-    """
+    synthesis = state.get("synthesis_output", {})
+
+    prompt = f"""You are a senior strategic advisor for {company}.
+You are part of a competitive intelligence workflow. Prioritize specific, verifiable, recent business evidence.
+Avoid generic strategy language. Prefer concrete facts over vague summaries.
+Do not invent metrics, product names, dates, pricing, or partnerships.
+Always favor outputs that are useful for weekly reporting, alerts, and competitive decision-making.
+
+Based on the competitive intelligence provided, generate 6-8 high-impact recommended actions.
+
+Distribute actions across these categories when relevant:
+- product
+- pricing
+- sales_enablement
+- marketing_content
+- brand_positioning
+- monitoring_alert
+
+Rules:
+1. Every action must be specific and operational.
+2. Every action must connect to a named competitor and a specific event or insight.
+3. Avoid vague advice like "improve the product" or "increase marketing".
+4. Prefer actions that can realistically be executed or assigned.
+5. Include at least 1 marketing_content recommendation when evidence supports it.
+6. Include at least 1 monitoring_alert recommendation when evidence supports it.
+
+Intelligence Context:
+- Market Events: {json.dumps(events)}
+- Impact Analysis: {json.dumps(impacts)}
+- Synthesized Insights: {json.dumps(synthesis)}
+
+Return 6-8 actions. Each action must include:
+- category (from the list above)
+- action (specific, operational)
+- reason (strategic reasoning)
+- linked_competitor (named competitor)
+- linked_event (specific event or insight)
+- evidence (data point supporting this)
+- expected_outcome (measurable business impact)
+- urgency (high, medium, or low)
+- confidence (0.0 to 1.0)
+"""
     
     try:
         print(f"  🤖 AI is formulating {company}'s strategic roadmap...")

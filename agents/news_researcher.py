@@ -25,25 +25,27 @@ def run(state: AgentState) -> AgentState:
 
     for company in companies:
         print(f"\n🔍 Researching: {company}...")
-        
-        # Limit to top 5 high-quality results per competitor
+
         search_results = search_company_news_and_products(company)
-        
-        # Extract and format news items
+
+        # Merge all 6 buckets, preserving query_source tag, cap per bucket
         news_items = []
-        raw_news = search_results.get("news", [])[:5]  # Strict limit to top 5
-        
-        for item in raw_news:
-            news_item: NewsItem = {
-                "title": item.get("title", "No Title"),
-                "url": item.get("url", ""),
-                "snippet": item.get("snippet", "")[:1000],
-                "source": item.get("source", "Unknown"),
-                "published_at": item.get("published_at", "")
-            }
-            news_items.append(news_item)
-            
-        print(f"  ✅ Collected {len(news_items)} news items for {company}")
+        bucket_limits = {
+            "news": 5, "product_pages": 5, "feedback": 5,
+            "pricing": 5, "market_data": 3, "positioning": 3,
+        }
+        for bucket, limit in bucket_limits.items():
+            for item in search_results.get(bucket, [])[:limit]:
+                news_item: NewsItem = {
+                    "title": item.get("title", "No Title"),
+                    "url": item.get("url", ""),
+                    "snippet": item.get("snippet", "")[:1000],
+                    "source": item.get("source", "Unknown"),
+                    "published_at": item.get("published_at", ""),
+                }
+                news_items.append(news_item)
+
+        print(f"  ✅ Collected {len(news_items)} items across 6 signal buckets for {company}")
         all_news[company] = news_items
 
     updated_state = dict(state)
